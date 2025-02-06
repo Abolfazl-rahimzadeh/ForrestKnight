@@ -1,34 +1,46 @@
-# README.md File
+# GitHub Action Workflow File (.github/workflows/youtube-readme-update.yml)
+name: Update YouTube Section in README
 
-# Abolfazl-rahimzadeh
+on:
+  schedule:
+    # Runs every hour at the start of the hour
+    - cron: '0 * * * *'
+  workflow_dispatch:  # Allows manual triggering from the Actions tab
 
-**Digital worm (Developer/Creator/Student)**
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-I'm an Iranian computer science student and content creator building my version of the digital world one step at a time. All coding projects are built from the ground up, from planning and designing all the way to solving real-life problems with code. All video content is built the same way, from ideation and planning, all the way to finalizing the content with artistic touches. I publish some videos every week on my [YouTube channel](https://www.youtube.com/@Abolfazl-rahimzadeh).
+      # ------- CHOOSE ONE OF THE FOLLOWING TWO SECTIONS (SIMPLE LIST or YOUTUBE CARDS) -------
 
-<p align="left">
-  <a href="https://www.youtube.com/@Abolfazl-rahimzadeh?sub_confirmation=1">
-    <img alt="youtube subscribers" title="Subscribe to my YouTube channel" src="https://custom-icon-badges.demolab.com/youtube/channel/subscribers/UC0ET-FULwBJ-D2-2YTBERPg?color=%23E05D44&label=SUBSCRIBE&logo=video&logoColor=white&style=for-the-badge&labelColor=CE4630"/></a>
-  <a href="https://www.youtube.com/@Abolfazl-rahimzadeh">
-    <img alt="youtube views" title="YouTube views" src="https://custom-icon-badges.demolab.com/youtube/channel/views/UC0ET-FULwBJ-D2-2YTBERPg?color=e0af19&logo=eye&logoColor=white&style=for-the-badge&labelColor=C79600"/></a>
-  <a href="https://github.com/abolfazl-rahimzadeh?tab=followers">
-    <img alt="github followers" title="Follow me on Github" src="https://custom-icon-badges.demolab.com/github/followers/Abolfazl-rahimzadeh?color=236ad3&labelColor=1155ba&style=for-the-badge&logo=person-add&label=Follow&logoColor=white"/></a>
-  <a href="https://github.com/abolfazl-rahimzadeh?tab=repositories&sort=stargazers">
-    <img alt="total stars" title="Total stars on GitHub" src="https://custom-icon-badges.demolab.com/github/stars/Abolfazl-rahimzadeh?color=55960c&style=for-the-badge&labelColor=488207&logo=star"/></a>
-</p>
+      # --- SECTION 1: SIMPLE LIST (Uses gautamkrishnar/blog-post-workflow) ---
+      - name: Get latest YouTube videos (Simple List)
+        uses: gautamkrishnar/blog-post-workflow@v3
+        with:
+          feed_list: "https://www.youtube.com/feeds/videos.xml?channel_id=YOUR_CHANNEL_ID"  # <--- REPLACE WITH YOUR CHANNEL ID
+          max_post_count: 5  # Optional: Adjust the number of videos
+          template: " - [{title}]({link})\\n" # optional: define a template for a cleaner look
 
----
+      # --- SECTION 2: YOUTUBE CARDS (Uses DenverCoder1/github-readme-youtube-cards) ---
+      # - name: Generate YouTube Cards  #Uncomment to use YouTube Cards
+      #   uses: DenverCoder1/github-readme-youtube-cards@main #Uncomment to use YouTube Cards
+      #   with:    #Uncomment to use YouTube Cards
+      #     channel_id: YOUR_CHANNEL_ID  # <--- REPLACE WITH YOUR CHANNEL ID     #Uncomment to use YouTube Cards
+      #     youtube_api_key: ${{ secrets.YOUTUBE_API_KEY }} # Required for some features (e.g., video duration) #Uncomment to use YouTube Cards
+      #     max_title_lines: 2  # Optional: Customize the appearance     #Uncomment to use YouTube Cards
+      #     show_duration: true    #Uncomment to use YouTube Cards
+      #     commit_message: "docs(readme): Update YouTube cards"  #Uncomment to use YouTube Cards
+      #     readme_path: README.md  #Uncomment to use YouTube Cards
+      #     output_only: false    #Uncomment to use YouTube Cards
+      #     output_type: markdown   #Uncomment to use YouTube Cards
 
-## 📺 Latest YouTube Videos
+      # ------- END CHOOSE ONE OF THE TWO SECTIONS -------
 
-<!-- BLOG-POST-LIST:START -->
-<!-- BLOG-POST-LIST:END -->
-
-### 📊 Stats
-
-![Abolfazl-rahimzadeh's GitHub stats](https://github-readme-stats.vercel.app/api?username=Abolfazl-rahimzadeh&show_icons=true&theme=dark)
-
-<details>
- <summary><h3>Abolfazl-rahimzadeh's Life</h3></summary>
-   I started my coding journey as a naive computer science student with a passion to learn everything I could about this programming world including code, unix, linux, theory, math. And all the while, teaching myself C family development (specially C#) with a dream to build my own app. and now I'm here to slowly learn and tell people what I've learned.
-</details>
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update README with latest YouTube videos"
+          branch: main  # Or your default branch name
